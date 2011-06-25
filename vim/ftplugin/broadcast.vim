@@ -35,8 +35,13 @@ let s:lastChange=0
 
 if !exists('*s:Debug')
 function s:Debug(toOutput)
-  silent execute '!date "+\%H:\%M:\%S " | tr -d "\n" >> output.txt'
-  silent execute "!echo " . shellescape(a:toOutput) . " >> output.txt"
+  " The system call fails unless it is assigned to a variable
+  " user system() instead of 'silent execute "!command"' because
+  " the latter cause screen blanks when short-circuiting normal
+  " mode mappings like replace (r key)
+  "
+  let l:ignore = system('date "+%H:%M:%S " | tr -d "\n" >> output.txt')
+  let l:ignore = system("echo " . shellescape(a:toOutput) . " >> output.txt")
 endfunction
 endif
 
