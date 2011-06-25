@@ -15,13 +15,14 @@ function! s:ArrowKeyPushed()
 
   " line changed with up or down arrow
   if l:line_save != s:lastLineNmbr
+    call s:SaveLineValue()
     let l:retVal = 1
   endif
   
   let s:lastLineNmbr = l:line_save
 
-  " TODO -- handle left and right arrow keys with charCount
-  "call s:Debug("TODO -- handle left and right arrow keys")
+  " The current line has not been changed
+  " but the cursor moved, an arrow key was pushed
   if s:lastCurrLineValue == getline(".")
     let l:retVal = 1
   endif
@@ -35,7 +36,7 @@ let s:lastChange=0
 if !exists('*s:Debug')
 function s:Debug(toOutput)
   silent execute '!date "+\%H:\%M:\%S " | tr -d "\n" >> output.txt'
-  silent execute "!echo " . a:toOutput . " >> output.txt"
+  silent execute "!echo " . shellescape(a:toOutput) . " >> output.txt"
 endfunction
 endif
 
@@ -52,25 +53,36 @@ function! s:Echo()
   let l:col_save = col(".")
   "yank last letter and paste it 
 	"execute "normal! hylp" 
-	call s:Debug("TODO echo change")
-
+	
   let s:lastCurrLineValue=getline('.')
- 
-  " stay in insert mode
-  " When ! is included it appends to the end of the line
-	if (col('.')+1) == col("$")
-    startinsert!
-  else
-    call cursor( l:line_save, l:col_save + 2  )
-    startinsert
-  endif
 
+	call s:Debug("(line, col) --> (" . line(".") . "," . col('.') . ")" )
+
+  " String is 0 indexed based, and column is 1 index based and a character
+  " has been inserted so currentColumn - 2
+	call s:Debug("Inserted --> " . strpart(s:lastCurrLineValue, col('.')-2, 1) )
+ 
 endfunction
 "endif
 
 
-function! s:EnteredInsertMode()
+function! s:SaveLineValue()
  let s:lastCurrLineValue=getline('.')
+endfunction
+
+" Calling debug causes flicker
+function! s:ReplaceChar()
+  let l:value = getchar()
+	execute "normal! r" . nr2char(l:value)
+
+  " We need to send output this way or else the screen goes blank 
+  let x = system('echo "test" >> output.txt')
+endfunction
+
+
+function! s:EnteredInsertMode()
+ let s:lastLineNmbr=line('.')
+ call s:SaveLineValue()
  call s:Debug("Entered InsertMode. Current line: " . s:lastCurrLineValue)
 endfunction
 
@@ -86,6 +98,13 @@ if !exists('broadcast_autocommands_loaded')
   autocmd! InsertEnter *.broadcast :call s:EnteredInsertMode()
   autocmd! InsertLeave *.broadcast :call s:ExitedInsertMode()
 endif
+
+" detect replace with 'r'
+noremap <silent> <buffer> r :call <SID>ReplaceChar()<cr>
+
+
+" TODO -- detect paste with 'p'
+
 
 " User changed from replace to insert mode or vice versa
 " autocmd InsertChange * call s:Debug("InsertChange")
