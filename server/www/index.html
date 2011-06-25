@@ -1,0 +1,36 @@
+<html>
+
+<head>
+
+  <script src="/javascript/socket.io.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:9999');
+
+    function $(id) { return document.getElementById(id); }
+    function log(msg) { $("log").innerHTML+="<br>"+msg; }
+
+    function handleStartMessage(data) {
+      log(data.document);
+    }
+
+    function handleEditMessage(data) {
+      log("recieved an edit");
+      log(data.change);
+    }
+
+    socket.on('startUp', handleStartMessage );
+    socket.on('edit', handleEditMessage );
+
+
+    function init() { }
+
+  </script>
+
+
+</head>
+
+<body onload="init()">
+
+<div id="log"></div>
+
+</body>
