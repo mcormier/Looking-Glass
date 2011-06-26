@@ -11,7 +11,8 @@ headers = {
 }
   
 
-resp, data = http.post("/", "blah blah", headers)
+# insert the letter x at line 1 col 2
+resp, data = http.post("/", "il 1 2 x", headers)
 
 puts 'Response code = ' + resp.code
 puts 'Message = ' + resp.message

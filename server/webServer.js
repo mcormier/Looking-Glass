@@ -5,14 +5,26 @@ var url = require('url');
 var port = 8080;
 var socketServer;
 
+
+function getPostData(data) {
+  console.log("Recieved some data: " + data);
+  if ( socketServer) {
+    // data is a Buffer object
+    socketServer.sendMessage( data.toString() );    
+  }
+}
+
+// Node receives the POST data in chunks and fires the "data" event for each chunk. 
+// http://jnjnjn.com/113/node-js-for-noobs-grabbing-post-content/
+// With only a little bit of traffic, that first chunk would always 
+// contain everything we needed. But once the traffic got crazy, we were 
+// only getting one piece of the request.
 function handlePost(req, res) {
+
+  req.addListener("data", getPostData);
 
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end('POST recieved');
-  if (socketServer) {
-    socketServer.sendMessage("post");    
-  }
-
 }
 
 function webSocketServer(server) {

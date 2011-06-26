@@ -30,14 +30,15 @@ function handleWSConn(socket) {
 
 }
 
+function parseMessage(message) {
+  var tokens = message.split(" ");
+  console.log("Command is : " + tokens[0] );
+}
+
 function sendMessage(message) {
-  console.log("TODO -- implement send to all clients: " + message);
-  if (wsServer) {
-    console.log("WS not null");
-  }
-  //wsServer.emit('edit', { everyone: 'in', change : '1 1 i' } );
-  wsServer.sockets.emit('edit', { change : "1 1 i" } );
-  console.log("After emit");
+  parseMessage(message);
+  console.log(message);
+  wsServer.sockets.emit('edit', { change : message } );
 }
 
 console.log('wsServer.js loaded');
