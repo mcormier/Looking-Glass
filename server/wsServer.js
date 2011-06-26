@@ -30,15 +30,38 @@ function handleWSConn(socket) {
 
 }
 
+// TODO - separate document and command logic from server
+// For POC assume a one line document
 function parseMessage(message) {
   var tokens = message.split(" ");
-  console.log("Command is : " + tokens[0] );
+  var command = tokens[0];
+  console.log("Command is : " + command );
+  if ( command == 'il' ) {
+     // ignore line value for now
+     var col = tokens[2];
+     console.log("Perform command at column: " + col);
+     console.log("Token Count is : " + tokens.length);
+     var value;
+     // A space was sent
+     if ( tokens.length != 4 ) {
+       value = " ";
+     } else {
+       value = tokens[3];
+     }
+
+
+     //insert value at column 
+     fakeDocument = fakeDocument.substr(0,col) + value + fakeDocument.substr(col); 
+  }
+
+  return fakeDocument;
 }
 
 function sendMessage(message) {
   parseMessage(message);
   console.log(message);
-  wsServer.sockets.emit('edit', { change : message } );
+  // wsServer.sockets.emit('edit', { change : message } );
+  wsServer.sockets.emit('edit', { change : fakeDocument } );
 }
 
 console.log('wsServer.js loaded');

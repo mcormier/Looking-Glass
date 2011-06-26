@@ -11,13 +11,15 @@
     function $(id) { return document.getElementById(id); }
     function log(msg) { $("log").innerHTML+="<br>"+msg; }
 
+    function setDocument(msg) { $("log").innerHTML=msg; }
+
     function handleStartMessage(data) {
       lookingGlass = data.document;
-      log(lookingGlass);
+      setDocument(lookingGlass);
     }
 
     function handleEditMessage(data) {
-      log(data.change);
+      setDocument(data.change);
     }
 
     socket.on('startUp', handleStartMessage );

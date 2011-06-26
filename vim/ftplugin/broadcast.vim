@@ -7,6 +7,9 @@
 let s:lastLineNmbr=0
 let s:lastCurrLineValue=''
 
+" TODO -- don't use absolute path
+let s:sendCmdScript='/Users/mcormier/Portfolio/GIT/broadcast/broadcaster/sendData.rb'
+
 " Returns true(1) if an arrow key was pressed
 "if !exists('*s:ArrowKeyPushed')
 function! s:ArrowKeyPushed()
@@ -61,15 +64,23 @@ function! s:Echo()
 	
   let s:lastCurrLineValue=getline('.')
 
-	call s:Debug("(line, col) --> (" . line(".") . "," . col('.') . ")" )
+  let l:char = s:getChar( line(".") , col(".") )
+  let l:editCmd = ' "il ' . line(".") . " " . col(".") . ' ' . l:char . '"'
+
+  let l:ignore = system( s:sendCmdScript . l:editCmd )
+
+	"call s:Debug("(line, col) --> (" . line(".") . "," . col('.') . ")" )
 
   " String is 0 indexed based, and column is 1 index based and a character
   " has been inserted so currentColumn - 2
-	call s:Debug("Inserted --> " . strpart(s:lastCurrLineValue, col('.')-2, 1) )
+	"call s:Debug("Inserted --> " . strpart(s:lastCurrLineValue, col('.')-2, 1) )
  
 endfunction
 "endif
 
+function! s:getChar(line, column)
+  return getline(a:line)[a:column - 2]
+endfunction
 
 function! s:SaveLineValue()
  let s:lastCurrLineValue=getline('.')
@@ -86,9 +97,9 @@ endfunction
 
 
 function! s:EnteredInsertMode()
- let s:lastLineNmbr=line('.')
- call s:SaveLineValue()
- call s:Debug("Entered InsertMode. Current line: " . s:lastCurrLineValue)
+ "let s:lastLineNmbr=line('.')
+ "call s:SaveLineValue()
+ "call s:Debug("Entered InsertMode. Current line: " . s:lastCurrLineValue)
 endfunction
 
 function! s:ExitedInsertMode()
