@@ -67,7 +67,7 @@ function! s:Echo()
   let l:char = s:getChar( line(".") , col(".") )
   let l:editCmd = ' "il ' . line(".") . " " . col(".") . ' ' . l:char . '"'
 
-  let l:ignore = system( s:sendCmdScript . l:editCmd )
+  let l:ignore = system( s:sendCmdScript . l:editCmd . " &" )
 
 	"call s:Debug("(line, col) --> (" . line(".") . "," . col('.') . ")" )
 
