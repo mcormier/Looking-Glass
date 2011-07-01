@@ -1,7 +1,7 @@
 var io = require('socket.io');
 var port = 9999;
 
-var fakeDocument = "This is the document";
+var fakeDocument = "";
 var wsServer; 
 
 function start() {
@@ -35,12 +35,12 @@ function handleWSConn(socket) {
 function parseMessage(message) {
   var tokens = message.split(" ");
   var command = tokens[0];
-  console.log("Command is : " + command );
+  //console.log("Command is : " + command );
   if ( command == 'il' ) {
      // ignore line value for now
      var col = tokens[2];
-     console.log("Perform command at column: " + col);
-     console.log("Token Count is : " + tokens.length);
+     //console.log("Perform command at column: " + col);
+     //console.log("Token Count is : " + tokens.length);
      var value;
      // A space was sent
      if ( tokens.length != 4 ) {
@@ -52,6 +52,9 @@ function parseMessage(message) {
 
      //insert value at column 
      fakeDocument = fakeDocument.substr(0,col) + value + fakeDocument.substr(col); 
+  }
+  if ( command == 'reset' ) {
+    fakeDocument = "";
   }
 
   return fakeDocument;

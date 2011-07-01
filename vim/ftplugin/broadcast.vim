@@ -8,7 +8,8 @@ let s:lastLineNmbr=0
 let s:lastCurrLineValue=''
 
 " TODO -- don't use absolute path
-let s:sendCmdScript='/Users/mcormier/Portfolio/GIT/broadcast/broadcaster/sendData.rb'
+"let s:sendCmdScript='/Users/mcormier/Portfolio/GIT/broadcast/broadcaster/sendData.rb'
+let s:sendCmdScript='/Users/mcormier/Portfolio/GIT/broadcast/broadcaster/send'
 
 " Returns true(1) if an arrow key was pressed
 "if !exists('*s:ArrowKeyPushed')
@@ -95,6 +96,11 @@ function! s:ReplaceChar()
   let x = system('echo "test" >> output.txt')
 endfunction
 
+function! s:DeleteLine()
+  execute "normal! dd"
+  " TODO - push into a common method
+  let l:ignore = system( s:sendCmdScript . " reset &" )
+endfunction
 
 function! s:EnteredInsertMode()
  "let s:lastLineNmbr=line('.')
@@ -117,6 +123,8 @@ endif
 
 " detect replace with 'r'
 noremap <silent> <buffer> r :call <SID>ReplaceChar()<cr>
+
+noremap <silent> <buffer> dd :call <SID>DeleteLine()<cr>
 
 
 " TODO -- detect paste with 'p'
