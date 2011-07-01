@@ -1,0 +1,6 @@
+#!/bin/bash
+
+MYLOCATION=`dirname $0`
+
+${MYLOCATION}/sendData.rb "$*"
+echo $* >> output.txt
